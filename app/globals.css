@@ -1,26 +1,192 @@
 @import "tailwindcss";
 
+/* ==========================================================================
+   Design tokens — Light Editorial Paper Grid
+   Single light theme. No dark mode, no neon, no glows.
+   ========================================================================== */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+
+  /* Canvas & surfaces */
+  --background: #f2ede9;
+  --background-alt: #f4f3f0;
+  --card-bg: #f5f0ea;
+  --card-solid: #ffffff;
+  --foreground: #1a1a1e;
+  --border-color: #d1cdc6;
+  --muted-text: #5b6b7f;
+
+  /* Primary accent: terracotta copper */
+  --primary: #c5692b;
+  --primary-light: #e08950;
+  --primary-deep: #b35d24;
+  --primary-wash: #faece1;
+
+  /* Secondary accent: imperial plum (editorial italics only) */
+  --secondary: #3a2b6b;
+  --secondary-accent: #3b2d59;
+
+  /* Pathfinding grid palette (editorial print style) */
+  --grid-line: #e4dfd8;
+  --cell-empty: #f2ede9;
+  --cell-wall: #1a1a1e;
+  --cell-wall-alt: #232326;
+  --cell-visited: #faece1;
+  --cell-visited-deep: #f4d8c5;
+  --cell-visited-border: #e8be9e;
+  --cell-path: #c5692b;
+  --cell-start: #166534;
+  --cell-goal: #9a430e;
+
+  /* Elevation */
+  --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  --selection: rgba(197, 105, 43, 0.2);
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-background-alt: var(--background-alt);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card-bg);
+  --color-card-solid: var(--card-solid);
+  --color-border: var(--border-color);
+  --color-muted: var(--muted-text);
+
+  --color-primary: var(--primary);
+  --color-primary-light: var(--primary-light);
+  --color-primary-deep: var(--primary-deep);
+  --color-primary-wash: var(--primary-wash);
+  --color-secondary: var(--secondary);
+  --color-secondary-accent: var(--secondary-accent);
+
+  --color-grid-line: var(--grid-line);
+  --color-cell-empty: var(--cell-empty);
+  --color-cell-wall: var(--cell-wall);
+  --color-cell-wall-alt: var(--cell-wall-alt);
+  --color-cell-visited: var(--cell-visited);
+  --color-cell-visited-deep: var(--cell-visited-deep);
+  --color-cell-visited-border: var(--cell-visited-border);
+  --color-cell-path: var(--cell-path);
+  --color-cell-start: var(--cell-start);
+  --color-cell-goal: var(--cell-goal);
+
+  --shadow-card: var(--card-shadow);
+
+  --font-sans: var(--font-instrument-sans), "Instrument Sans", ui-sans-serif,
+    system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Consolas", "Courier New", monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ==========================================================================
+   Base
+   ========================================================================== */
+html {
+  background-color: var(--background);
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--selection);
+  color: var(--foreground);
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ==========================================================================
+   Atmosphere — architectural paper grid + film grain
+   ========================================================================== */
+
+/* Fine architectural grid, applied to the page wrapper */
+.grid-background {
+  background-image:
+    linear-gradient(rgba(26, 26, 30, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(26, 26, 30, 0.035) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: center top;
+}
+
+/* Masked section grid that fades out toward the edges (absolute overlay) */
+.section-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(26, 26, 30, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(26, 26, 30, 0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
+  -webkit-mask-image: radial-gradient(
+    ellipse 80% 50% at 50% 0%,
+    #000 70%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 80% 50% at 50% 0%,
+    #000 70%,
+    transparent 100%
+  );
+}
+
+/* Subtle analog paper grain, fixed over the viewport */
+.film-grain {
+  position: relative;
+}
+.film-grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
+  opacity: 0.12;
+  mix-blend-mode: multiply;
+}
+@media (prefers-reduced-motion: reduce) {
+  .film-grain::after {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Typographic utilities
+   ========================================================================== */
+
+/* Micro-architecture labels: "/ 01", "02 — Heuristics" */
+.eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--foreground) 50%, transparent);
+}
+
+/* Monospace telemetry counters */
+.telemetry {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
 }
