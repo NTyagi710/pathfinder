@@ -1,6 +1,5 @@
 # Pathfinder — AI Heuristic Search Visualizer
 
-**Live demo:** `https://YOUR-PROJECT.vercel.app`
 
 Replace `YOUR-PROJECT` with the production URL printed by `vercel --prod` before you submit. The app needs no environment variables.
 
