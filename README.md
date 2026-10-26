@@ -1,13 +1,32 @@
 # Pathfinder — AI Heuristic Search Visualizer
 
+**Live app:** [pathfinder-beta-gold.vercel.app](https://pathfinder-beta-gold.vercel.app/)
 
-Replace `YOUR-PROJECT` with the production URL printed by `vercel --prod` before you submit. The app needs no environment variables.
+**Source:** [github.com/NTyagi710/pathfinder](https://github.com/NTyagi710/pathfinder)
 
-A client-side visualizer for a comparative study of heuristic search on a 2D grid. Draw walls, drag the start and goal, and watch **A\***, **Breadth-First Search (BFS)**, and **Greedy Best-First Search (GBFS)** expand the same board. Switch the heuristic among Manhattan, Euclidean, and Chebyshev, or race all three algorithms and compare nodes explored, path length, and runtime.
+Pathfinder is a browser visualizer for heuristic search on a 2D grid. You draw walls, drag the start and goal, and watch **A\***, **Breadth-First Search (BFS)**, and **Greedy Best-First Search (GBFS)** expand the same board. You can switch the heuristic among Manhattan, Euclidean, and Chebyshev, or race all three algorithms and compare nodes explored, path length, and runtime.
 
-Search runs entirely in the browser. There is no backend and no model API.
+Nothing leaves the browser. Search, maze generation, timing, and animation all run on the client. There is no backend, no database, and no model API. The app needs no environment variables.
 
-Course use: algorithmic implementation of AI search, with an in-app oral-defense sheet (**Theory & Viva Defense**).
+It is built as a course project on algorithmic AI search. The in-app **Theory & Viva Defense** sheet states the admissibility, consistency, and optimality arguments an oral exam would ask for.
+
+## What it is
+
+A single-page Next.js app. The board is a canvas of cells. Each cell is empty, a wall, the start, or the goal. While a search plays back, cells are also painted as frontier, visited, or path.
+
+The page holds the selected algorithm, heuristic, and playback speed. The canvas owns the walls and the marker positions. When you press **Visualize Path** or **Race all three**, the page snapshots the board, runs the pure search functions in `lib/algorithms`, then hands the expansion order and the reconstructed path back to the canvas to draw.
+
+| Piece | Role |
+| :--- | :--- |
+| `app/page.tsx` | Board state, single run, race, optimality check |
+| `components/visualizer/GridCanvas.tsx` | Drawing, wall editing, marker dragging, playback |
+| `components/visualizer/ControlBar.tsx` | Algorithm, heuristic, speed, maze, actions |
+| `components/visualizer/MetricsHUD.tsx` | Nodes explored, path length, runtime, optimality |
+| `components/viva/VivaModal.tsx` | Oral-defense sheet |
+| `lib/algorithms/*` | A\*, BFS, GBFS. No React, no DOM |
+| `lib/heuristics.ts` | Manhattan, Euclidean, Chebyshev |
+| `lib/data-structures/MinHeap.ts` | Binary min-heap for A\* and GBFS |
+| `lib/maze/generators.ts` | Recursive division and random obstacles |
 
 ## What you can do in the demo
 
@@ -221,72 +240,27 @@ npm run start
 
 Load [http://localhost:3000](http://localhost:3000), generate a maze, run **Visualize Path**, then **Race all three**. Stop the server with Ctrl+C.
 
-## Publish to GitHub and Vercel
+## Repository and production
 
-Run this from the project root in PowerShell. `.gitignore` already excludes `node_modules/`, `.next/`, `.vercel/`, and `.env*`. Do not commit secrets.
+| Where | Detail |
+| :--- | :--- |
+| GitHub | [github.com/NTyagi710/pathfinder](https://github.com/NTyagi710/pathfinder) |
+| Production | [pathfinder-beta-gold.vercel.app](https://pathfinder-beta-gold.vercel.app/) |
+| Branch | `main` |
+| Framework | Next.js, detected by Vercel |
+| Environment variables | None |
 
-Git must already have `user.name` and `user.email` set. `gh` must be authenticated (`gh auth login`). The Vercel CLI must be authenticated (`vercel login`).
+`.gitignore` excludes `node_modules/`, `.next/`, `.vercel/`, and `.env*`. Do not commit secrets.
 
-### 1. Initialize and make the first commit
+Vercel builds with `npm install` and `npm run build`. The output stays on the Next.js default. This project is not a static `out` export. The Node.js version on Vercel should be 20.x or 22.x (Next.js 16 requires 20.9 or newer).
 
-Skip `git init` if a `.git` directory is already present.
-
-```powershell
-git init -b main
-git add .
-git status
-git commit -m "feat: initial pathfinding suite implementation"
-```
-
-`git status` before the commit should list source, `package.json`, `package-lock.json`, and `README.md`. It should not list `node_modules` or `.next`.
-
-### 2. Create the GitHub repository and push
+Pushes to `main` deploy when the GitHub repository is connected to the Vercel project. To deploy the local tree immediately:
 
 ```powershell
-gh repo create ai-pathfinding-visualizer --public --source=. --remote=origin --push
-```
-
-If that name is taken, pick another and use it in the command. Equivalent manual remote:
-
-```powershell
-git remote add origin https://github.com/<your-user>/ai-pathfinding-visualizer.git
-git push -u origin main
-```
-
-### 3. Deploy with the Vercel CLI
-
-```powershell
-npm install -g vercel
-vercel login
-vercel --prod
-```
-
-If you prefer not to install the CLI globally:
-
-```powershell
-npx vercel login
 npx vercel --prod
 ```
 
-On the first run, accept the defaults that match this repo:
-
-- Set up and deploy the current directory.
-- Link to an existing project: **no** (unless you already created one).
-- Project name: `ai-pathfinding-visualizer` (or the GitHub repo name).
-- Directory: `./`
-- Framework preset: **Next.js** (auto-detected). Override settings: **no**.
-
-Vercel uses `npm install` and `npm run build`. Leave the output directory on the Next.js default. Do not set a static `out` export. Set the Node.js version to 20.x or 22.x if the dashboard asks.
-
-The CLI prints a production URL such as `https://ai-pathfinding-visualizer.vercel.app`. Paste that URL over the placeholder at the top of this file, then:
-
-```powershell
-git add README.md
-git commit -m "docs: add Vercel production URL"
-git push
-```
-
-Importing the GitHub repository in the Vercel dashboard is an alternative to the CLI. Once the project is connected to GitHub, later pushes to `main` deploy on their own. `vercel --prod` deploys the local tree immediately and is the command this submission uses.
+The production URL above is the live deployment.
 
 ## Viva discussion points
 
