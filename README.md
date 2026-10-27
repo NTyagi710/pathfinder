@@ -185,10 +185,12 @@ lib/
   types.ts                        # NodeStatus, GridNode, SearchResult
   heuristics.ts                   # Manhattan, Euclidean, Chebyshev
   data-structures/MinHeap.ts
+  data-structures/min-heap.selfcheck.mts
   algorithms/astar.ts
   algorithms/bfs.ts
   algorithms/gbfs.ts
   maze/generators.ts
+  maze/generators.selfcheck.mts
 ```
 
 Stack: Next.js 16 (App Router), React 19, TypeScript (strict), Tailwind CSS 4, Lucide. No pathfinding dependencies.
@@ -221,6 +223,7 @@ Run these from the project root, in order. Each command must exit `0`.
 ```bash
 npx tsc --noEmit
 npm run lint
+npm test
 npm run build
 ```
 
@@ -228,6 +231,7 @@ npm run build
 | :--- | :--- | :--- |
 | `npx tsc --noEmit` | Strict TypeScript against `tsconfig.json`. Emits no JavaScript (`noEmit` is already set). | No diagnostics, exit code 0. |
 | `npm run lint` | `eslint` with `eslint.config.mjs` (Next.js core-web-vitals + TypeScript). | No errors, exit code 0. |
+| `npm test` | `lib/data-structures/min-heap.selfcheck.mts` and `lib/maze/generators.selfcheck.mts`. Heap order, heuristic values, and maze walls. | Prints `ok` and `maze generators ok`, exit code 0. |
 | `npm run build` | Production compile and prerender of `/`. Fails the process on type errors during the build. | Route table prints `/` and the process exits 0. |
 
 `npm run lint` is a separate step. Do not treat a green `tsc` as a green lint, or a green lint as a green build.
