@@ -1,5 +1,7 @@
 # Pathfinder — AI Heuristic Search Visualizer
 
+Nipun Tyagi
+
 **Live app:** [pathfinder-beta-gold.vercel.app](https://pathfinder-beta-gold.vercel.app/)
 
 **Source:** [github.com/NTyagi710/pathfinder](https://github.com/NTyagi710/pathfinder)
@@ -290,3 +292,9 @@ Short answers you should be able to give while the demo is on screen. The in-app
 
 7. **What should you say about the implementation details if asked?**  
    Open set: binary heap, tie-break on `h`, no decrease-key. BFS queue: index array plus head pointer. Timing: `performance.now()` around the search only; race mode keeps the best of five runs and only then animates. Parent pointers rebuild the path. `pathCost` is the number of steps, or `-1` when the path list is empty.
+
+## References
+
+Admissibility, consistency, and the optimality argument for A* follow the heuristic-search chapters of Stuart Russell and Peter Norvig, *Artificial Intelligence: A Modern Approach*.
+
+A* with `f(n) = g(n) + h(n)` is the algorithm in Peter E. Hart, Nils J. Nilsson, and Bertram Raphael, "A Formal Basis for the Heuristic Determination of Minimum Cost Paths," *IEEE Transactions on Systems Science and Cybernetics* 4, no. 2 (1968), pages 100-107.
